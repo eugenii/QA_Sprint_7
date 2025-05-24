@@ -1,11 +1,14 @@
+import allure
 import pytest
 
 from api_testing.methods.courier_methods import CourierMethods
 
 
 class TestCourierCreation:
+    """Создание курьера."""
 
-    # @pytest.mark.positive
+    @allure.title('Успешное созлание курьера.')
+    @allure.description('Проверка успешного создания курьера.')
     def test_create_courier_success(self, courier_fixture):
         """Проверка успешного создания курьера."""
         login, password, firstname, response = courier_fixture
@@ -13,7 +16,8 @@ class TestCourierCreation:
         assert response[0] == 201, "Не удалось создать курьера"
         assert response[1].get("ok") is True, "Неожиданный ответ сервера"
 
-
+    @allure.title('Попытка создать курьера - с занятыми данными.')
+    @allure.description('Проверка ошибки при создании курьера с повторяющимися данными.')
     def test_create_courier_doubled(self, courier_fixture):
         """Проверка успешного создания курьера."""
         login, password, firstname, response = courier_fixture
@@ -24,13 +28,14 @@ class TestCourierCreation:
         # Проверяем сообщение об ошибке
         actual_message = response_data.get("message")
         expected_message = "Этот логин уже используется. Попробуйте другой."
-        print(actual_message, expected_message)
 
         assert response_status == 409, f"Ожидался статус 409, но получен {response_status}"
         assert actual_message == expected_message, (
             f"Ожидалось сообщение '{expected_message}', но получено '{actual_message}'"
         )
 
+    @allure.title('Попытки создать курьера с недостаточными данными.')
+    @allure.description('Проверка неуспешного создания курьера без логина или без пароля')
     @pytest.mark.parametrize(
         "login, password, firstname, expected_message",
         [
