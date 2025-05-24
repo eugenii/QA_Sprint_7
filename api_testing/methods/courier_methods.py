@@ -20,7 +20,7 @@ class CourierMethods:
         response = requests.delete(
             f"{COURIERS_URL}/{courier_id}"
         )
-        return response.status_code
+        return response.status_code, response.json()
     
     @allure.step('Получаем ID курьера.')
     def get_courier_id(self, login, password):
